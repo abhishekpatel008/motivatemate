@@ -1,6 +1,6 @@
 const { Task, User, Pet } = require('../models');
 const { sequelize } = require('../config/database');
-const {checkAndAwardAchievements} = require('./achievementController');
+const { checkAndAwardAchievements } = require('./achievementController');
 
 // @desc Get all tasks for the authenticated user
 // @route GET /api/tasks
@@ -24,9 +24,15 @@ const getTasks = async (req, res) => {
 // @route POST /api/tasks
 // @access Private
 const createTask = async (req, res) => {
-    try {       
+    try {
 
         const { title, description, priority, difficulty, due_date, points_worth, completed } = req.body;
+        // Calculate points on backend
+        const priorityPoints = { low: 10, medium: 25, high: 50, urgent: 75 };
+        const difficultyMultiplier = { easy: 1, medium: 1.5, hard: 2 };
+        const pointsWorth = Math.round(
+            (priorityPoints[priority] || 10) * (difficultyMultiplier[difficulty] || 1)
+        );
 
         // Check authentication
         if (!req.user || !req.user.id) {
@@ -40,7 +46,7 @@ const createTask = async (req, res) => {
             priority: priority || 'medium',
             difficulty: difficulty || 'medium',
             due_date,
-            points_worth: points_worth || 10,
+            points_worth: pointsWorth,
             completed: completed || false
         });
 
@@ -82,7 +88,25 @@ const updateTask = async (req, res) => {
             return res.status(404).json({ message: 'Task not found' });
         }
 
-        await task.update(req.body);
+        let pointsWorth = task.points_worth;
+        if (req.body.priority !== undefined || req.body.difficulty !== undefined) {
+            const priority = req.body.priority || task.priority;
+            const difficulty = req.body.difficulty || task.difficulty;
+            const priorityPoints = { low: 10, medium: 25, high: 50, urgent: 75 };
+            const difficultyMultiplier = { easy: 1, medium: 1.5, hard: 2 };
+            pointsWorth = Math.round(
+                (priorityPoints[priority] || 10) * (difficultyMultiplier[difficulty] || 1)
+            );
+        }
+
+        await task.update({
+            title: req.body.title,
+            description: req.body.description,
+            priority: req.body.priority,
+            difficulty: req.body.difficulty,
+            due_date: req.body.due_date,
+            points_worth: pointsWorth
+        });
 
         res.json(task);
     } catch (error) {

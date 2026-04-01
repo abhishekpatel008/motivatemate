@@ -1,6 +1,15 @@
 const AddTaskModal = ({ isOpen, onClose, newTask, setNewTask, onCreateTask }) => {
     if (!isOpen) return null;
 
+const calculatePoints = () => {
+    const priorityPoints = {low: 10, medium: 25, high: 50, urgent:75};
+    const difficultyMultiplier = { easy: 1, medium: 1.5, hard: 2 };
+        const basePoints = priorityPoints[newTask.priority] || 10;
+        const multiplier = difficultyMultiplier[newTask.difficulty] || 1;
+        return Math.round(basePoints * multiplier);
+
+}
+
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-2xl">
@@ -62,6 +71,18 @@ const AddTaskModal = ({ isOpen, onClose, newTask, setNewTask, onCreateTask }) =>
                             value={newTask.due_date}
                             onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
                         />
+                    </div>
+
+                    <div className="mb-4 p-3 bg-purple-50 rounded-lg">
+                        <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Points reward:</span>
+                            <span className="text-xl font-bold text-purple-600">
+                                ⭐ {calculatePoints()} pts
+                            </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                            {newTask.priority} priority × {newTask.difficulty} difficulty
+                        </p>
                     </div>
 
                     <div className="flex justify-end gap-3 mt-4 border-t pt-4">

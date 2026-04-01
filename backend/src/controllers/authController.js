@@ -153,4 +153,55 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getCurrentUser };
+// @desc Update user profile
+// @route PUT /api/auth/update
+// @access Private
+const updateUser = async (req, res) => {
+    try {
+        const { username, email } = req.body;
+        const user = await User.findByPk(req.user.id);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        // Check if username is taken (if changing)
+        if (username && username !== user.username) {
+            const existingUser = await User.findOne({ where: { username } });
+            if (existingUser) {
+                return res.status(400).json({ message: 'Username already taken' });
+            }
+        }
+        
+        // Check if email is taken (if changing)
+        if (email && email !== user.email) {
+            const existingUser = await User.findOne({ where: { email } });
+            if (existingUser) {
+                return res.status(400).json({ message: 'Email already in use' });
+            }
+        }
+        
+        await user.update({
+            username: username || user.username,
+            email: email || user.email
+        });
+        
+        res.json({
+            message: 'Profile updated successfully',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                points: user.points,
+                level: user.level,
+                streak_days: user.streak_days
+            }
+        });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Add to module.exports
+module.exports = { registerUser, loginUser, getCurrentUser, updateUser };

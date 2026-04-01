@@ -31,10 +31,15 @@ export const purchaseItem = (itemId) => api('/shop/purchase', { method: 'POST', 
 export const getUserInventory = () => api('/shop/inventory')
 
 // Achievements
-// Achievements
 export const getAchievements = () => api('/achievements');
 export const getUserAchievements = () => api('/achievements/user');
 export const getAchievementProgress = () => api('/achievements/progress');
+
+// Update user profile
+export const updateUser = (userData) => api('/auth/update', {
+    method: 'PUT',
+    body: JSON.stringify(userData)
+});
 
 // Renamed to avoid React Hook conflict
 export const applyItemToPet = (inventoryId) => api('/pet/use-item', { 

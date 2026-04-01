@@ -3,6 +3,8 @@ import {
     getTasks,
     completeTask,
     createTask,
+    updateTask,
+    deleteTask,
     getPet,
     getCurrentUser,
     applyItemToPet,
@@ -16,6 +18,7 @@ import CalendarView from '../components/CalendarView';
 import AddTaskModal from '../components/AddTaskModal';
 import ShopModal from '../components/ShopModal';
 import AchievementsModal from '../components/AchievementsModal';
+import EditTaskModal from '../components/EditTaskModal';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard({ user, setUser }) {
@@ -29,12 +32,14 @@ function Dashboard({ user, setUser }) {
     const [showAddTask, setShowAddTask] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
     const [newTask, setNewTask] = useState({
         title: '',
         description: '',
         priority: 'medium',
         difficulty: 'medium',
-        due_date: ''
+        due_date: '',
     });
 
     const loadDashboard = useCallback(async () => {
@@ -63,7 +68,7 @@ function Dashboard({ user, setUser }) {
 
     useEffect(() => {
         loadDashboard();
-    }, []);
+    }, [loadDashboard]);
 
 
     const handleCreateTask = async (e) => {
@@ -73,7 +78,7 @@ function Dashboard({ user, setUser }) {
         // If date is selected from calendar, auto-fill due_date
         const taskData = {
             ...newTask,
-            due_date: newTask.due_date || (selectedDate ? selectedDate.toISOString().split('T')[0] : '')
+            due_date: newTask.due_date || (selectedDate ? selectedDate.toISOString().split('T')[0] : ''),
         };
 
         try {
@@ -100,6 +105,42 @@ function Dashboard({ user, setUser }) {
         }
     };
 
+    const handleEditClick = (task) => {
+        setEditingTask(task);
+        setIsEditModalOpen(true);
+    };
+    // Handle update task
+    const handleUpdateTask = async (updatedTask) => {
+        try {
+            await updateTask(updatedTask.id, {
+                title: updatedTask.title,
+                description: updatedTask.description,
+                priority: updatedTask.priority,
+                difficulty: updatedTask.difficulty,
+                due_date: updatedTask.due_date
+            });
+            setIsEditModalOpen(false);
+            setEditingTask(null);
+            loadDashboard();
+        } catch (error) {
+            console.error('Error updating task:', error);
+            alert('Failed to update task');
+        }
+    };
+
+    // Handle delete task
+    const handleDeleteTask = async (taskId) => {
+        if (window.confirm('Are you sure you want to delete this task?')) {
+            try {
+                await deleteTask(taskId);
+                loadDashboard();
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                alert('Failed to delete task');
+            }
+        }
+    };
+
     const handleUseItem = async (invId) => {
         try {
             await applyItemToPet(invId);
@@ -117,7 +158,7 @@ function Dashboard({ user, setUser }) {
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate ('/login', { replace: true });
+        navigate('/login', { replace: true });
     };
 
     if (loading) {
@@ -141,6 +182,8 @@ function Dashboard({ user, setUser }) {
                         <TaskSection
                             tasks={tasks}
                             onComplete={handleComplete}
+                            onEdit={handleEditClick}
+                            onDelete={handleDeleteTask}
                             onAddTaskClick={() => setShowAddTask(true)}
                         />
                         <InventorySection
@@ -185,6 +228,16 @@ function Dashboard({ user, setUser }) {
             <AchievementsModal
                 isOpen={isAchievementsOpen}
                 onClose={() => setIsAchievementsOpen(false)}
+            />
+
+            <EditTaskModal
+                isOpen={isEditModalOpen}
+                onClose={() => {
+                    setIsEditModalOpen(false);
+                    setEditingTask(null);
+                }}
+                task={editingTask}
+                onSave={handleUpdateTask}
             />
 
         </div>

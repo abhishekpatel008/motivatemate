@@ -1,6 +1,6 @@
 import TaskItem from './TaskItem';
 
-const TaskSection = ({ tasks, onComplete, onAddTaskClick }) => {
+const TaskSection = ({ tasks, onComplete, onAddTaskClick, onEdit, onDelete }) => {
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
@@ -24,6 +24,8 @@ const TaskSection = ({ tasks, onComplete, onAddTaskClick }) => {
                             key={task.id}
                             task={task}
                             onComplete={onComplete}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
                         />
                     ))
                 )}

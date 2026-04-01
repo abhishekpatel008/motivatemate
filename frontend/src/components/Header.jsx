@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Header = ({ user, onShopClick, onAchievementsClick, onLogout }) => {
     return (
         <nav className="bg-purple-600 text-white p-4 flex justify-between items-center shadow-lg">
@@ -18,6 +20,12 @@ const Header = ({ user, onShopClick, onAchievementsClick, onLogout }) => {
                 >
                     🛒 Shop
                 </button>
+                <Link
+                    to="/profile"
+                    className="bg-green-400 text-purple-900 px-3 py-1 rounded-lg font-bold hover:bg-blue-300 transition"
+                >
+                    👤 Profile
+                </Link>
                 <button onClick={onLogout} className="text-sm underline">
                     Logout
                 </button>

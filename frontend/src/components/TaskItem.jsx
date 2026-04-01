@@ -1,4 +1,4 @@
-const TaskItem = ({ task, onComplete }) => {
+const TaskItem = ({ task, onComplete, onEdit, onDelete }) => {
     const getPriorityColor = (priority) => {
         const colors = {
             urgent: 'bg-red-100 text-red-700',
@@ -12,13 +12,32 @@ const TaskItem = ({ task, onComplete }) => {
     return (
         <div className="flex flex-col p-4 border rounded-lg hover:bg-gray-50 transition shadow-sm">
             <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1">
                     <span className={`font-bold text-lg ${task.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>
                         {task.title}
                     </span>
                     <span className={`text-xs px-2 py-1 rounded-full font-bold uppercase ${getPriorityColor(task.priority)}`}>
                         {task.priority}
                     </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    {/* ========= EDIT BUTTON ========= */}
+                    <button
+                        onClick={() => onEdit(task)}
+                        className="text-blue-500 hover:text-blue-700 px-2 py-1 rounded text-sm"
+                        title="Edit task"
+                    >
+                        ✏️ Edit
+                    </button>
+                    {/* ========= DELETE BUTTON ========= */}
+                    <button
+                        onClick={() => onDelete(task.id)}
+                        className="text-red-500 hover:text-red-700 px-2 py-1 rounded text-sm"
+                        title="Delete task"
+                    >
+                        🗑️ Delete
+                    </button>
+
                 </div>
 
                 {!task.completed && (
