@@ -309,10 +309,6 @@ ALTER TABLE ONLY public.achievements
 -- Name: achievements achievements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
--- ALTER TABLE ONLY public.achievements
-    -- ADD CONSTRAINT achievements_pkey PRIMARY KEY (id);
-
-
 --
 -- Name: pets pets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
