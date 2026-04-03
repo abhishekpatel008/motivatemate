@@ -490,7 +490,43 @@ ALTER TABLE ONLY public.user_inventory
 ALTER TABLE ONLY public.user_inventory
     ADD CONSTRAINT user_inventory_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+--
+-- Populate Database
+--
 
---
--- PostgreSQL database dump complete
---
+-- Seed Shop Items into Database
+INSERT INTO public.shop_items (id, name, description, item_type, effect_type, effect_value, cost_points, rarity)
+VALUES 
+(1, 'Premium Pet Food', 'Delicious meal', 'food', 'hunger', 30, 20, 'common'),
+(2, 'Bouncy Ball', 'Fun toy', 'toy', 'happiness', 25, 35, 'uncommon'),
+(13, 'Gourmet Feast', 'A luxurious meal that satisfies hunger completely', 'food', 'hunger', 50, 45, 'rare'),
+(14, 'Energy Snack', 'Quick energy boost for your pet', 'food', 'energy', 25, 30, 'uncommon'),
+(15, 'Healthy Treat', 'Nutritious snack that boosts happiness', 'food', 'happiness', 20, 25, 'common'),
+(16, 'Squeaky Mouse', 'Irresistible toy for cats', 'toy', 'happiness', 30, 40, 'uncommon'),
+(17, 'Flying Disc', 'Perfect for active dogs', 'toy', 'happiness', 35, 50, 'rare'),
+(18, 'Puzzle Feeder', 'Mental stimulation toy', 'toy', 'happiness', 20, 55, 'rare'),
+(19, 'Rainbow Scarf', 'Colorful accessory for any pet', 'accessory', 'cosmetic', 0, 60, 'uncommon'),
+(20, 'Magic Cape', 'Makes your pet look heroic', 'accessory', 'cosmetic', 0, 120, 'epic'),
+(21, 'Sparkly Collar', 'Shiny accessory that boosts mood', 'accessory', 'happiness', 10, 45, 'rare'),
+(22, 'Super Elixir', 'Restores all stats by 20', 'consumable', 'all', 20, 80, 'epic'),
+(23, 'Happiness Potion', 'Instantly boosts happiness', 'consumable', 'happiness', 40, 50, 'rare'),
+(24, 'Energy Drink', 'Restores 50 energy', 'consumable', 'energy', 50, 45, 'uncommon'),
+(25, 'Legendary Feast', 'A meal fit for a champion', 'food', 'all', 40, 100, 'legendary'),
+(26, 'Laser Pointer', 'Hours of entertainment', 'toy', 'happiness', 45, 65, 'rare'),
+(27, 'Golden Crown', 'Royal accessory', 'accessory', 'cosmetic', 0, 200, 'legendary'),
+(28, 'Mystery Box', 'Surprise effect!', 'consumable', 'random', 0, 75, 'epic')
+ON CONFLICT (id) DO NOTHING;
+
+-- Seed Achievements into Render Database
+INSERT INTO public.achievements (id, name, description, criteria_type, criteria_value, reward_points)
+VALUES 
+(5, 'First Step', 'Complete your first task', 'tasks_completed', 1, 10),
+(6, 'Task Master', 'Complete 10 tasks', 'tasks_completed', 10, 50),
+(7, 'Productivity Guru', 'Complete 50 tasks', 'tasks_completed', 50, 200),
+(8, 'Point Collector', 'Earn 100 points', 'points_earned', 100, 25),
+(9, 'Point Millionaire', 'Earn 1000 points', 'points_earned', 1000, 100),
+(10, 'Weekly Warrior', 'Maintain a 7-day streak', 'streak_days', 7, 75),
+(11, 'Monthly Champion', 'Maintain a 30-day streak', 'streak_days', 30, 200),
+(12, 'Pet Lover', 'Reach pet level 5', 'pet_level', 5, 50),
+(13, 'Pet Master', 'Reach pet level 10', 'pet_level', 10, 100)
+ON CONFLICT (id) DO NOTHING;
