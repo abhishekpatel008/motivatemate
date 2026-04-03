@@ -3,19 +3,19 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Database Migration
-if (process.env.NODE_ENV === 'production') {
-    console.log('Production mode - running migrations...');
-    const { exec } = require('child_process');
-    exec('node src/migrate.js', (err, stdout, stderr) => {
-        if (err) {
-            console.error('Migration error:', err);
-            return;
-        }
-        if (stderr) console.error('Migration stderr:', stderr);
-        console.log(stdout);
-        console.log('Migration check complete');
-    });
-}
+// if (process.env.NODE_ENV === 'production') {
+//     console.log('Production mode - running migrations...');
+//     const { exec } = require('child_process');
+//     exec('node src/migrate.js', (err, stdout, stderr) => {
+//         if (err) {
+//             console.error('Migration error:', err);
+//             return;
+//         }
+//         if (stderr) console.error('Migration stderr:', stderr);
+//         console.log(stdout);
+//         console.log('Migration check complete');
+//     });
+// }
 
 const { testConnection } = require('./config/database');
 const authRoutes = require('./routes/auth');
